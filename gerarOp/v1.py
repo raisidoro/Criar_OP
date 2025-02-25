@@ -31,20 +31,23 @@ def v01(path,data):
 
     ws1 = wb1['RESUMO']
 
-    while i < 28:
-        
+
+    while ws1.cell(4,i).value != None: #executa até encontrar a primeira coluna vazia
+
         if ws1.cell(3,i).value != None:
+
             if  data[0:5] in str(format(ws1.cell(3,i).value, "%d/%m")):
 
-                while j < 11:     
+                while ws1.cell(j,1).value != None :  #excecuta até encontrar a primeira linha vazia
 
                     if ws1.cell(j,i).value != '' and ws1.cell(j,i).value != 0:
-                        
+
                         certo = (str(ws1.cell(j,2).value) + ' , ' + str(ws1.cell(j,i).value))
                         valor.append(certo)
 
                     j = j + 1
+
         i = i + 1
 
     print(valor)
-    return 
+    return
