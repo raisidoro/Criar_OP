@@ -17,8 +17,9 @@ def v01(path,data):
     tpAp    = xl.load_workbook(pathAp, data_only=True)
     tabAp   = tpAp.active
     nOP = ''
-    i = 1
+    i = 2
     j = 5
+    valor = []
 
 
     cursor = dbConn()
@@ -31,16 +32,19 @@ def v01(path,data):
     ws1 = wb1['RESUMO']
 
     while i < 28:
+        
+        if ws1.cell(3,i).value != None:
+            if  data[0:5] in str(format(ws1.cell(3,i).value, "%d/%m")):
 
-        if  data[0:5] in ws1.cell(3,i).value:
+                while j < 11:     
 
-            while j < 11:
-                
-                if ws1.cell(j,i).value != 0:
-                    print(ws1.cell(j,2).value + ' , ' + ws1.cell(j,3).value)
+                    if ws1.cell(j,i).value != '' and ws1.cell(j,i).value != 0:
+                        
+                        certo = (str(ws1.cell(j,2).value) + ' , ' + str(ws1.cell(j,i).value))
+                        valor.append(certo)
 
-
-    valor = ws1.cell(3,i).value
+                    j = j + 1
+        i = i + 1
 
     print(valor)
     return 

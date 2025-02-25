@@ -30,7 +30,7 @@ class Main(wx.Frame):
             data = str(informaData.GetValue())
         informaData.Destroy()
 
-        pathname = "C:\\TOTVS\\" + data[3:5] + 'PLANEJAMENTO SEMANAL - SUTORENA.xlsx'
+        pathname = "C:\\TOTVS\\" + data[3:5] + ' - PLANEJAMENTO SEMANAL - SUTORENA.xlsx'
         v1.v01(pathname,data)
         wx.MessageBox('Tudo Pronto!', 'Info', wx.OK | wx.ICON_INFORMATION)
          
