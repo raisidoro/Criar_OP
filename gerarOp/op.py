@@ -1,11 +1,14 @@
 import wx
 from openpyxl import Workbook
 import v1
+import os
+import glob
 #import conexao
 
 # -*- coding: utf-8 -*-
 class Main(wx.Frame):
     def __init__(self, title="Gerar OPs"):
+
         wx.Frame.__init__(self, None, title=title)
 
         panel = wx.Panel(self)
@@ -23,15 +26,38 @@ class Main(wx.Frame):
         self.Centre()
         self.Show(True)
 
+
+
+
     def eventBtnGerar(self, event):
+        i = 0
+        arquivo = []
         informaData = wx.TextEntryDialog(self, 'Informe a data: XX/XX/XXXX ')
         
         if informaData.ShowModal() == wx.ID_OK:
             data = str(informaData.GetValue())
         informaData.Destroy()
+        
+        while i < 5:
+            if i == 0:
+                caminho = '\\\\files-gdbr01\\gdbr\\GeDoc\\GeDoc - Public\\Outros\\Production\\1 - PLANEJAMENTO DE PRODUÇÃO - Production planning\\4 - WS\\EXTRUSÃO\\MIX\\MONTH PLANNING\\FILTRAGEM'
+            elif i == 1:
+                caminho = '\\\\files-gdbr01\\gdbr\\GeDoc\\GeDoc - Public\\Outros\\Production\\1 - PLANEJAMENTO DE PRODUÇÃO - Production planning\\4 - WS\\EXTRUSÃO\\MIX\\MONTH PLANNING\\PELLET'
+            elif i == 2:
+                caminho = '\\\\files-gdbr01\\gdbr\\GeDoc\\GeDoc - Public\\Outros\\Production\\1 - PLANEJAMENTO DE PRODUÇÃO - Production planning\\4 - WS\\EXTRUSÃO\\MIX\\MONTH PLANNING\\ROLO'
+            elif i == 3:
+                caminho = '\\\\files-gdbr01\\gdbr\\GeDoc\\GeDoc - Public\\Outros\\Production\\1 - PLANEJAMENTO DE PRODUÇÃO - Production planning\\4 - WS\EXTRUSÃO\\SPONGE LINE\\MONTH PLANNING'
+            elif i == 4:
+                caminho = '\\\\files-gdbr01\\gdbr\\GeDoc\\GeDoc - Public\\Outros\\Production\\1 - PLANEJAMENTO DE PRODUÇÃO - Production planning\\4 - WS\\EXTRUSÃO\\TPV LINE\\MONTH PLAN'
 
-        pathname = "C:\\TOTVS\\" + data[3:5] + ' - PLANEJAMENTO SEMANAL - SUTORENA.xlsx'
-        v1.v01(pathname,data)
+            
+            os.chdir(caminho)
+
+            for file in glob.glob(data[3:5]+ '*'):
+                arquivo.append(caminho + '\\' + file)
+
+            i = i + 1
+        v1.v01(arquivo,data)
         wx.MessageBox('Tudo Pronto!', 'Info', wx.OK | wx.ICON_INFORMATION)
          
         
