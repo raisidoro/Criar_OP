@@ -10,6 +10,7 @@ from decimal import *
 from conexao import *
 import numpy
 from pathlib import Path
+from pathlib import Path
 import json
 
 def v01(arquivo,data):
@@ -33,6 +34,7 @@ def v01(arquivo,data):
         
         wb1 = xl.load_workbook(pathAp, data_only = True)
 
+        ws1 = wb1['RESUMO']
         ws1 = wb1['RESUMO']
 
         while ws1.cell(4,i).value != None: #executa até encontrar a primeira coluna vazia
