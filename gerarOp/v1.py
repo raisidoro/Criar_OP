@@ -25,11 +25,11 @@ def v01(arquivo,data):
     op = open("C:\TOTVS\op.txt", "w")
 
     for path in arquivo:
-        pathAp  = path
-        tpAp    = xl.load_workbook(pathAp, data_only=True)
-        tabAp   = tpAp.active
-        
-        i = 2
+        pathAp     = path
+        tpAp       = xl.load_workbook(pathAp, data_only=True)
+        tabAp      = tpAp.active
+        inicColuna = 1
+        i = 0
         j = 5
         
         wb1 = xl.load_workbook(pathAp, data_only = True)
@@ -37,22 +37,28 @@ def v01(arquivo,data):
         ws1 = wb1['RESUMO']
         ws1 = wb1['RESUMO']
 
+
+        while str(ws1.cell(4,inicColuna).value) != 'KANBAN':
+            inicColuna = inicColuna + 1
+
+        i = inicColuna 
+
         while ws1.cell(4,i).value != None: #executa até encontrar a primeira coluna vazia
 
-            if ws1.cell(3,i).value != None:
+                if ws1.cell(3,i).value != None:
 
-                if  data[0:5] in str(format(ws1.cell(3,i).value, "%d/%m")):
+                    if  data[0:5] in str(format(ws1.cell(3,i).value, "%d/%m")):
 
-                    while ws1.cell(j,1).value != None :  #excecuta até encontrar a primeira linha vazia
+                        while ws1.cell(j,1).value != None :  #excecuta até encontrar a primeira linha vazia
 
-                        if ws1.cell(j,i).value != '' and ws1.cell(j,i).value != 0:
-                            certo = (str(ws1.cell(j,2).value) + ' , ' + str(ws1.cell(j,i).value))
-                            valor.append(certo)
+                            if ws1.cell(j,i).value != '' and ws1.cell(j,i).value != 0:
+                                certo = (str(ws1.cell(j,inicColuna).value) + ' , ' + str(ws1.cell(j,i).value))
+                                valor.append(certo)
 
-                        j = j + 1
+                            j = j + 1
 
-            i = i + 1
-    
+                i = i + 1
+        
     for valores in valor: 
 
         resultado = (numpy.where(vetDados[0] ==  valores[0:5]))
@@ -64,7 +70,7 @@ def v01(arquivo,data):
 
             op.write(nOP + ";" + indice + ";001;" + PartNumber + ";" + valores[8:] + ";" + data + ";" + data + ";F \n")
         else:
-            print(valores[0:5] + " Não foi encontrado na array de dados!")
+            print(valores[0:5] + " Não foi encontrado na array de dados! " + path)
 
     op.close()
     return 
