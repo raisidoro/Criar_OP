@@ -18,6 +18,7 @@ def v01(arquivo,data):
     cursor.execute("SELECT DISTINCT ZKI_KANBAN 'Kanban', RTRIM(CAD.[PN]) 'PN', ZKI_ITEMOP, SB1.B1_PESO, IIF(SB1.B1_PESO > 0, CAST(((1 / SB1.B1_PESO)) AS NUMERIC(16,6)), 0) 'Peca por KG', RTRIM(CAD.[LINHA]) 'LINHA', rtrim(SB1.B1_LOCPAD) 'Armazem' FROM ZKI010 ZKI WITH (NOLOCK) LEFT JOIN (SELECT CASE ISNULL(ZKB.ZKB_KANBAN,'') WHEN '' THEN B1_ZZKNBAN ELSE ZKB.ZKB_KANBAN END [KANBAN], B1_COD [PN], B1_ZZLNPRD [LINHA] FROM SB1010 (NOLOCK) SB1 LEFT JOIN ZKB010 ZKB WITH (NOLOCK) ON SB1.B1_COD = ZKB.ZKB_PN AND ZKB.D_E_L_E_T_ = '' WHERE SB1.D_E_L_E_T_ = '' AND SB1.B1_ZZKNBAN <> '') [CAD] ON CAD.KANBAN = ZKI.ZKI_KANBAN INNER JOIN SB1010 SB1 WITH (NOLOCK) ON SB1.B1_COD = CAD.[PN] WHERE ZKI.D_E_L_E_T_ = '' AND ZKI.ZKI_STATUS = 'L';")
     nOP = data[8:10] + data[3:5] + data[0:2]  
     dataAp  = data
+    caminhos = []
     valor = []
     vetDados = cursor.fetchall()
     vetDados = numpy.transpose(vetDados)
@@ -73,4 +74,61 @@ def v01(arquivo,data):
             print(valores[0:5] + " Não foi encontrado na array de dados! " + path)
 
     op.close()
+
+    #  ------------------- TRATAMENTO DE ERROS -------------------  #
+
+    log = open("C:\TOTVS\log.txt")
+
+    #planilha não foi encontrada ou se houve erro ao abrir o arquivo
+    try:
+        wb1 = xl.load_workbook(pathAp, data_only=True)
+    except FileNotFoundError:
+        log.write(f"[{datetime.datetime.now()}] Erro: Arquivo não foi encontrado\n")
+    except Exception as e:
+        log.write(f"[{datetime.datetime.now()}] Erro: Falha ao abrir o arquivo\n")
+
+    #aba resumo não foi encontrada ou se a aba resumo não pode ser acessada
+    try:
+        ws1 = wb1['RESUMO']
+    except KeyError:
+        log.write(f"[{datetime.datetime.now()}] Erro: Aba 'RESUMO' não foi encontrada no arquivo\n")
+    except Exception as e:
+        log.write(f"[{datetime.datetime.now()}] Erro: Falha ao acessar a aba 'RESUMO' no arquivo, Erro: {str(e)}\n")
+
+    #se a data não estiver no formato correto
+    try:
+        datetime.datetime.strptime(dataAp, "%d/%m/%Y")
+    except ValueError:
+        log.write(f"[{datetime.datetime.now()}] Erro: Formato de data inválido - {dataAp}, a data deve ser inserida no formato XX/XX/XXXX\n")
+        exit()
+
+    #se a data não estiver na planilha
+    while ws1.cell(4,i).value != None: 
+                if ws1.cell(3,i).value != None:
+                    if  data[0:5] not in str(ws1.cell(3,i).value):
+                        log.write(f"[{datetime.datetime.now()}] Erro: Não foi possível encontrar a data {dataAp} na planilha\n")
+                        print("Data não encontrada na planilha")
+                i = i + 1
+    
+    #se o kanban não estiver no array
+    for valores in valor: 
+        resultado = (numpy.where(vetDados[0] ==  valores[0:5]))
+    
+        if len(resultado[0]) != 1:
+            log.write(f"[{datetime.datetime.now()}] Erro: " + valores[0:5] + " não foi encontrado!" + path)
+
+    #se não for encontrado o caminho da pasta 
+    caminhos = [
+        '\\\\files-gdbr01\\gdbr\\GeDoc\\GeDoc - Public\\Outros\\Production\\1 - PLANEJAMENTO DE PRODUÇÃO - Production planning\\4 - WS\\EXTRUSÃO\\MIX\\MONTH PLANNING\\FILTRAGEM',
+        '\\\\files-gdbr01\\gdbr\\GeDoc\\GeDoc - Public\\Outros\\Production\\1 - PLANEJAMENTO DE PRODUÇÃO - Production planning\\4 - WS\\EXTRUSÃO\\MIX\\MONTH PLANNING\\PELLET',
+        '\\\\files-gdbr01\\gdbr\\GeDoc\\GeDoc - Public\\Outros\\Production\\1 - PLANEJAMENTO DE PRODUÇÃO - Production planning\\4 - WS\\EXTRUSÃO\\MIX\\MONTH PLANNING\\ROLO',
+        '\\\\files-gdbr01\\gdbr\\GeDoc\\GeDoc - Public\\Outros\\Production\\1 - PLANEJAMENTO DE PRODUÇÃO - Production planning\\4 - WS\\EXTRUSÃO\\SPONGE LINE\\MONTH PLANNING',
+        '\\\\files-gdbr01\\gdbr\\GeDoc\\GeDoc - Public\\Outros\\Production\\1 - PLANEJAMENTO DE PRODUÇÃO - Production planning\\4 - WS\\EXTRUSÃO\\TPV LINE\\MONTH PLAN'
+    ]
+
+    if path[0:125] not in caminhos:
+         log.write(f"[{datetime.datetime.now()}] Erro: Não foi encontrado o caminho" + path[0:125] + "\n")
+
+
+    log.close()
     return 

@@ -58,7 +58,7 @@ class Main(wx.Frame):
 
             i = i + 1
         v1.v01(arquivo,data)
-        wx.MessageBox('Tudo Pronto!', 'Info', wx.OK | wx.ICON_INFORMATION)
+
          
         
 
