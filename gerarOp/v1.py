@@ -32,6 +32,7 @@ def v01(arquivo,data):
         inicColuna = 1
         i = 0
         j = 5
+        k = 1
         
         wb1 = xl.load_workbook(pathAp, data_only = True)
 
@@ -77,17 +78,9 @@ def v01(arquivo,data):
 
     #  ------------------- TRATAMENTO DE ERROS -------------------  #
 
-    log = open("C:\TOTVS\log.txt")
+    log = open("C:\TOTVS\log.txt", "w")
 
-    #planilha não foi encontrada ou se houve erro ao abrir o arquivo
-    try:
-        wb1 = xl.load_workbook(pathAp, data_only=True)
-    except FileNotFoundError:
-        log.write(f"[{datetime.datetime.now()}] Erro: Arquivo não foi encontrado\n")
-    except Exception as e:
-        log.write(f"[{datetime.datetime.now()}] Erro: Falha ao abrir o arquivo\n")
-
-    #aba resumo não foi encontrada ou se a aba resumo não pode ser acessada
+    #aba resumo não foi encontrada ou a aba resumo não pode ser acessada
     try:
         ws1 = wb1['RESUMO']
     except KeyError:
@@ -95,39 +88,48 @@ def v01(arquivo,data):
     except Exception as e:
         log.write(f"[{datetime.datetime.now()}] Erro: Falha ao acessar a aba 'RESUMO' no arquivo, Erro: {str(e)}\n")
 
-    #se a data não estiver no formato correto
-    try:
-        datetime.datetime.strptime(dataAp, "%d/%m/%Y")
-    except ValueError:
-        log.write(f"[{datetime.datetime.now()}] Erro: Formato de data inválido - {dataAp}, a data deve ser inserida no formato XX/XX/XXXX\n")
-        exit()
 
     #se a data não estiver na planilha
-    while ws1.cell(4,i).value != None: 
-                if ws1.cell(3,i).value != None:
-                    if  data[0:5] not in str(ws1.cell(3,i).value):
-                        log.write(f"[{datetime.datetime.now()}] Erro: Não foi possível encontrar a data {dataAp} na planilha\n")
-                        print("Data não encontrada na planilha")
-                i = i + 1
+    while ws1.cell(4,k).value != None: 
+        if ws1.cell(3,k).value != None:
+            if  data[0:5] not in str(ws1.cell(3,k).value):
+                nEncontrado = True
+        k = k + 1
+
+    if nEncontrado == True: 
+        log.write(f"[{datetime.datetime.now()}] Erro: Não foi possível encontrar a data {data} na planilha\n")
+        print("Data não encontrada na planilha")
     
     #se o kanban não estiver no array
     for valores in valor: 
         resultado = (numpy.where(vetDados[0] ==  valores[0:5]))
     
         if len(resultado[0]) != 1:
-            log.write(f"[{datetime.datetime.now()}] Erro: " + valores[0:5] + " não foi encontrado!" + path)
+            log.write(f"[{datetime.datetime.now()}] Erro: " + valores[0:5] + " não foi encontrado!" + path + "n")
 
-    #se não for encontrado o caminho da pasta 
-    caminhos = [
-        '\\\\files-gdbr01\\gdbr\\GeDoc\\GeDoc - Public\\Outros\\Production\\1 - PLANEJAMENTO DE PRODUÇÃO - Production planning\\4 - WS\\EXTRUSÃO\\MIX\\MONTH PLANNING\\FILTRAGEM',
-        '\\\\files-gdbr01\\gdbr\\GeDoc\\GeDoc - Public\\Outros\\Production\\1 - PLANEJAMENTO DE PRODUÇÃO - Production planning\\4 - WS\\EXTRUSÃO\\MIX\\MONTH PLANNING\\PELLET',
-        '\\\\files-gdbr01\\gdbr\\GeDoc\\GeDoc - Public\\Outros\\Production\\1 - PLANEJAMENTO DE PRODUÇÃO - Production planning\\4 - WS\\EXTRUSÃO\\MIX\\MONTH PLANNING\\ROLO',
-        '\\\\files-gdbr01\\gdbr\\GeDoc\\GeDoc - Public\\Outros\\Production\\1 - PLANEJAMENTO DE PRODUÇÃO - Production planning\\4 - WS\\EXTRUSÃO\\SPONGE LINE\\MONTH PLANNING',
-        '\\\\files-gdbr01\\gdbr\\GeDoc\\GeDoc - Public\\Outros\\Production\\1 - PLANEJAMENTO DE PRODUÇÃO - Production planning\\4 - WS\\EXTRUSÃO\\TPV LINE\\MONTH PLAN'
-    ]
+    #se o Kanban não existe no banco
+    j = 1  
+    while ws1.cell(j, inicColuna).value is not None: 
+        kanban = ws1.cell(j, inicColuna).value
+        if kanban not in vetDados:
+            log.write(f"[{datetime.datetime.now()}] Erro: Kanban {str(kanban)} não encontrado no banco\n")
+        j = j + 1 
 
-    if path[0:125] not in caminhos:
-         log.write(f"[{datetime.datetime.now()}] Erro: Não foi encontrado o caminho" + path[0:125] + "\n")
+    #se o valor informado na planilha é um número
+    i = 1  
+    while ws1.cell(4, i).value is not None: 
+        if ws1.cell(3, i).value is not None: 
+            if data[0:5] in str(ws1.cell(3, i).value.strftime("%d/%m")):
+                j = 1 
+                while ws1.cell(j, i).value is not None:
+                    valor = ws1.cell(j, i).value
+                    if valor is not None:
+                        try:
+                            float(valor)
+                        except ValueError:
+                            log.write(f"[{datetime.datetime.now()}] Erro: O valor informado na coluna {i}, linha {j} não é um número.\n")
+                    j = j + 1  
+        i = i + 1  
 
 
     log.close()

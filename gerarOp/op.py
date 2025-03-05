@@ -3,6 +3,7 @@ from openpyxl import Workbook
 import v1
 import os
 import glob
+import datetime
 #import conexao
 
 # -*- coding: utf-8 -*-
@@ -26,9 +27,6 @@ class Main(wx.Frame):
         self.Centre()
         self.Show(True)
 
-
-
-
     def eventBtnGerar(self, event):
         i = 0
         arquivo = []
@@ -37,6 +35,15 @@ class Main(wx.Frame):
         if informaData.ShowModal() == wx.ID_OK:
             data = str(informaData.GetValue())
         informaData.Destroy()
+
+        log = open("C:\TOTVS\log.txt", "w")
+
+        #se a data não estiver no formato correto
+        try:
+            datetime.datetime.strptime(data, "%d/%m/%Y")
+        except ValueError:
+            log.write(f"[{datetime.datetime.now()}] Erro: Formato de data inválido - {data}, a data deve ser inserida no formato XX/XX/XXXX\n")
+            exit()
         
         while i < 5:
             if i == 0:
@@ -53,14 +60,29 @@ class Main(wx.Frame):
             
             os.chdir(caminho)
 
+            encontrouArquivo = False
+
             for file in glob.glob(data[3:5]+ '*'):
                 arquivo.append(caminho + '\\' + file)
+                encontrouArquivo = True
 
+            #planilha não foi encontrada ou houve erro ao abrir o arquivo
+            if encontrouArquivo == False:
+                log.write(f"[{datetime.datetime.now()}] Erro: Nenhum arquivo encontrado no caminho {caminho}\n")
+                log.write(f"[{datetime.datetime.now()}] Erro: Falha ao abrir o arquivo no caminho {caminho}\n")
             i = i + 1
-        v1.v01(arquivo,data)
 
-         
-        
+        log.close()
+        v1.v01(arquivo,data)
+    
+        log_path = "C:\TOTVS\log.txt"
+        if os.path.exists(log_path):
+            if os.stat(log_path).st_size == 0:
+                
+            else: 
+                os.system()
+                
+
 
 if __name__ == "__main__":
     ex = wx.App(False)
