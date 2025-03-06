@@ -97,7 +97,7 @@ def v01(arquivo,data):
         k = k + 1
 
     if nEncontrado == True: 
-        log.write(f"[{datetime.datetime.now()}] Erro: Não foi possível encontrar a data {data} na planilha\n")
+        log.write(f"[{datetime.datetime.now()}] Erro: Não foi possível encontrar a data {data} na planilha {pathAp}\n")
         print("Data não encontrada na planilha")
     
     #se o kanban não estiver no array
@@ -107,8 +107,8 @@ def v01(arquivo,data):
         if len(resultado[0]) != 1:
             log.write(f"[{datetime.datetime.now()}] Erro: " + valores[0:5] + " não foi encontrado!" + path + "n")
 
-    #se o Kanban não existe no banco
-    j = 1  
+    #se o Kanban não existe no banco 
+    j = 5
     while ws1.cell(j, inicColuna).value is not None: 
         kanban = ws1.cell(j, inicColuna).value
         if kanban not in vetDados:
@@ -116,11 +116,11 @@ def v01(arquivo,data):
         j = j + 1 
 
     #se o valor informado na planilha é um número
-    i = 1  
+    i = 1 
     while ws1.cell(4, i).value is not None: 
-        if ws1.cell(3, i).value is not None: 
+        if ws1.cell(3, i).value is not None:
             if data[0:5] in str(ws1.cell(3, i).value.strftime("%d/%m")):
-                j = 1 
+                j = 5 
                 while ws1.cell(j, i).value is not None:
                     valor = ws1.cell(j, i).value
                     if valor is not None:

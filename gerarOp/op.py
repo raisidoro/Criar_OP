@@ -74,14 +74,13 @@ class Main(wx.Frame):
 
         log.close()
         v1.v01(arquivo,data)
-    
+
         log_path = "C:\TOTVS\log.txt"
-        if os.path.exists(log_path):
-            if os.stat(log_path).st_size == 0:
-                
-            else: 
-                os.system()
-                
+
+        if os.path.exists(log_path) and os.stat(log_path).st_size > 0:
+            os.startfile(log_path)
+        else:
+            wx.MessageBox('Tudo Pronto!', 'Info', wx.OK | wx.ICON_INFORMATION)
 
 
 if __name__ == "__main__":
