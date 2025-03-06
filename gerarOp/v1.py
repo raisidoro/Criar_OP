@@ -10,7 +10,6 @@ from decimal import *
 from conexao import *
 import numpy
 from pathlib import Path
-from pathlib import Path
 import json
 
 def v01(arquivo,data):
@@ -32,13 +31,10 @@ def v01(arquivo,data):
         inicColuna = 1
         i = 0
         j = 5
-        k = 1
         
         wb1 = xl.load_workbook(pathAp, data_only = True)
 
         ws1 = wb1['RESUMO']
-        ws1 = wb1['RESUMO']
-
 
         while str(ws1.cell(4,inicColuna).value) != 'KANBAN':
             inicColuna = inicColuna + 1
@@ -46,19 +42,13 @@ def v01(arquivo,data):
         i = inicColuna 
 
         while ws1.cell(4,i).value != None: #executa até encontrar a primeira coluna vazia
-
                 if ws1.cell(3,i).value != None:
-
                     if  data[0:5] in str(format(ws1.cell(3,i).value, "%d/%m")):
-
                         while ws1.cell(j,1).value != None :  #excecuta até encontrar a primeira linha vazia
-
                             if ws1.cell(j,i).value != '' and ws1.cell(j,i).value != 0:
                                 certo = (str(ws1.cell(j,inicColuna).value) + ' , ' + str(ws1.cell(j,i).value))
                                 valor.append(certo)
-
                             j = j + 1
-
                 i = i + 1
         
     for valores in valor: 
@@ -88,13 +78,16 @@ def v01(arquivo,data):
     except Exception as e:
         log.write(f"[{datetime.datetime.now()}] Erro: Falha ao acessar a aba 'RESUMO' no arquivo, Erro: {str(e)}\n")
 
-
     #se a data não estiver na planilha
-    while ws1.cell(4,k).value != None: 
-        if ws1.cell(3,k).value != None:
-            if  data[0:5] not in str(ws1.cell(3,k).value):
-                nEncontrado = True
-        k = k + 1
+    nEncontrado = False
+    while nEncontrado == False:
+        while ws1.cell(4,inicColuna).value != None: 
+            if ws1.cell(3,inicColuna).value != None:
+                if data[0:5] in str(format(ws1.cell(3,inicColuna).value, "%d/%m")):
+                    nEncontrado = False
+                else:
+                    nEncontrado = True
+            inicColuna = inicColuna + 1
 
     if nEncontrado == True: 
         log.write(f"[{datetime.datetime.now()}] Erro: Não foi possível encontrar a data {data} na planilha {pathAp}\n")
@@ -105,10 +98,11 @@ def v01(arquivo,data):
         resultado = (numpy.where(vetDados[0] ==  valores[0:5]))
     
         if len(resultado[0]) != 1:
-            log.write(f"[{datetime.datetime.now()}] Erro: " + valores[0:5] + " não foi encontrado!" + path + "n")
+            log.write(f"[{datetime.datetime.now()}] Erro: " + valores[0:5] + " não foi encontrado!" + path + "\n")
 
     #se o Kanban não existe no banco 
     j = 5
+    inicColuna = 1
     while ws1.cell(j, inicColuna).value is not None: 
         kanban = ws1.cell(j, inicColuna).value
         if kanban not in vetDados:
@@ -130,7 +124,6 @@ def v01(arquivo,data):
                             log.write(f"[{datetime.datetime.now()}] Erro: O valor informado na coluna {i}, linha {j} não é um número.\n")
                     j = j + 1  
         i = i + 1  
-
 
     log.close()
     return 
