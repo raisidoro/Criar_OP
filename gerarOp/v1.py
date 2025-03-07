@@ -79,17 +79,17 @@ def v01(arquivo,data):
         log.write(f"[{datetime.datetime.now()}] Erro: Falha ao acessar a aba 'RESUMO' no arquivo, Erro: {str(e)}\n")
 
     #se a data não estiver na planilha
-    nEncontrado = False
-    while nEncontrado == False:
-        while ws1.cell(4,inicColuna).value != None: 
-            if ws1.cell(3,inicColuna).value != None:
-                if data[0:5] in str(format(ws1.cell(3,inicColuna).value, "%d/%m")):
-                    nEncontrado = False
-                else:
-                    nEncontrado = True
-            inicColuna = inicColuna + 1
+    dataEncontrada = False
+    i = inicColuna
+    while ws1.cell(4,i).value != None:
+        if ws1.cell(3, i).value != None:
+            if data[0:5] in str(format(ws1.cell(3,i).value, "%d/%m")):
+                print("data existe na planilha")
+                dataEncontrada = True
+                break
+        i = i + 1
 
-    if nEncontrado == True: 
+    if not dataEncontrada:
         log.write(f"[{datetime.datetime.now()}] Erro: Não foi possível encontrar a data {data} na planilha {pathAp}\n")
         print("Data não encontrada na planilha")
     
@@ -98,13 +98,13 @@ def v01(arquivo,data):
         resultado = (numpy.where(vetDados[0] ==  valores[0:5]))
     
         if len(resultado[0]) != 1:
-            log.write(f"[{datetime.datetime.now()}] Erro: " + valores[0:5] + " não foi encontrado!" + path + "\n")
+            log.write(f"[{datetime.datetime.now()}] Erro: " + valores[0:5] + " não foi encontrado!" + pathAp + "\n")
 
     #se o Kanban não existe no banco 
     j = 5
-    inicColuna = 1
-    while ws1.cell(j, inicColuna).value is not None: 
-        kanban = ws1.cell(j, inicColuna).value
+    i = inicColuna
+    while ws1.cell(j, i).value is not None: 
+        kanban = ws1.cell(j, i).value
         if kanban not in vetDados:
             log.write(f"[{datetime.datetime.now()}] Erro: Kanban {str(kanban)} não encontrado no banco\n")
         j = j + 1 

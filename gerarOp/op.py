@@ -80,7 +80,7 @@ class Main(wx.Frame):
         if os.path.exists(log_path) and os.stat(log_path).st_size > 0:
             os.startfile(log_path)
         else:
-            wx.MessageBox('Tudo Pronto!', 'Info', wx.OK | wx.ICON_INFORMATION)
+            wx.MessageBox('OPs geradas com sucesso!', 'Info', wx.OK | wx.ICON_INFORMATION)
 
 
 if __name__ == "__main__":
