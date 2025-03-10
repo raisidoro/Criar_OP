@@ -79,17 +79,20 @@ def v01(arquivo,data):
         log.write(f"[{datetime.datetime.now()}] Erro: Falha ao acessar a aba 'RESUMO' no arquivo, Erro: {str(e)}\n")
 
     #se a data não estiver na planilha
-    dataEncontrada = False
-    i = inicColuna
-    while ws1.cell(4,i).value != None:
-        if ws1.cell(3, i).value != None:
-            if data[0:5] in str(format(ws1.cell(3,i).value, "%d/%m")):
-                print("data existe na planilha")
-                dataEncontrada = True
-                break
+    i = 1
+    nEncontrada = False
+
+    while ws1.cell(3,i).value == None:
         i = i + 1
 
-    if not dataEncontrada:
+    while ws1.cell(3,i).value != None: #executa até encontrar a primeira coluna vazia
+        if ws1.cell(3,i).value != None:
+            if  data[0:5] in str(format(ws1.cell(3,i).value, "%d/%m")):
+                nEncontrada = True
+                break
+        i = i + 1
+                
+    if not nEncontrada:
         log.write(f"[{datetime.datetime.now()}] Erro: Não foi possível encontrar a data {data} na planilha {pathAp}\n")
         print("Data não encontrada na planilha")
     
@@ -105,12 +108,12 @@ def v01(arquivo,data):
     i = inicColuna
     while ws1.cell(j, i).value is not None: 
         kanban = ws1.cell(j, i).value
-        if kanban not in vetDados:
+        if kanban not in vetDados[0]:
             log.write(f"[{datetime.datetime.now()}] Erro: Kanban {str(kanban)} não encontrado no banco\n")
         j = j + 1 
 
     #se o valor informado na planilha é um número
-    i = 1 
+    i = inicColuna
     while ws1.cell(4, i).value is not None: 
         if ws1.cell(3, i).value is not None:
             if data[0:5] in str(ws1.cell(3, i).value.strftime("%d/%m")):

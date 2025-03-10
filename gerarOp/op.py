@@ -72,16 +72,32 @@ class Main(wx.Frame):
                 log.write(f"[{datetime.datetime.now()}] Erro: Falha ao abrir o arquivo no caminho {caminho}\n")
             i = i + 1
 
-        log.close()
-        v1.v01(arquivo,data)
+        self.show_loading()
+        try:
+            v1.v01(arquivo, data)
+        finally:
+            self.hide_loading()
 
         log_path = "C:\TOTVS\log.txt"
 
         if os.path.exists(log_path) and os.stat(log_path).st_size > 0:
             os.startfile(log_path)
+            self.Close()
         else:
             wx.MessageBox('OPs geradas com sucesso!', 'Info', wx.OK | wx.ICON_INFORMATION)
+            self.Close()
 
+    # Tela de carregamento
+    def show_loading(self):
+        self.loading_frame = wx.Frame(None, title="Carregando", size=(200, 100))
+        panel = wx.Panel(self.loading_frame)
+        wx.StaticText(panel, label="Por favor, aguarde...", pos=(40, 20))
+        self.loading_frame.Centre()
+        self.loading_frame.Show()
+        wx.GetApp().Yield() 
+
+    def hide_loading(self):
+        self.loading_frame.Destroy()
 
 if __name__ == "__main__":
     ex = wx.App(False)
