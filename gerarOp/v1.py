@@ -4,13 +4,10 @@ import openpyxl as xl
 import wx
 from openpyxl import Workbook
 import datetime
-import os
-import criar_xlsx
 from decimal import *
 from conexao import *
 import numpy
 from pathlib import Path
-import json
 
 def v01(arquivo,data):
     cursor = dbConn()
@@ -112,7 +109,7 @@ def v01(arquivo,data):
             log.write(f"[{datetime.datetime.now()}] Erro: Kanban {str(kanban)} não encontrado no banco\n")
         j = j + 1 
 
-    #se o valor informado na planilha é um número
+    #se o valor informado na planilha não é um número
     i = inicColuna
     while ws1.cell(4, i).value is not None: 
         if ws1.cell(3, i).value is not None:
