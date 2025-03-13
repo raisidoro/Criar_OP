@@ -4,7 +4,6 @@ import v1
 import os
 import glob
 import datetime
-#import conexao
 
 # -*- coding: utf-8 -*-
 class Main(wx.Frame):
@@ -34,58 +33,60 @@ class Main(wx.Frame):
         
         if informaData.ShowModal() == wx.ID_OK:
             data = str(informaData.GetValue())
+            nOP = data[8:10] + data[3:5] + data[0:2]  
+
         informaData.Destroy()
 
-        log = open("C:\TOTVS\log.txt", "w")
+        log = open("C:\TOTVS\log" + nOP + ".txt", "w")
 
         #se a data não estiver no formato correto
         try:
             datetime.datetime.strptime(data, "%d/%m/%Y")
         except ValueError:
-            log.write(f"[{datetime.datetime.now()}] Erro: Formato de data inválido - {data}, a data deve ser inserida no formato XX/XX/XXXX\n")
-            exit()
-        
-        while i < 5:
-            if i == 0:
-                caminho = '\\\\files-gdbr01\\gdbr\\GeDoc\\GeDoc - Public\\Outros\\Production\\1 - PLANEJAMENTO DE PRODUÇÃO - Production planning\\4 - WS\\EXTRUSÃO\\MIX\\MONTH PLANNING\\FILTRAGEM'
-            elif i == 1:
-                caminho = '\\\\files-gdbr01\\gdbr\\GeDoc\\GeDoc - Public\\Outros\\Production\\1 - PLANEJAMENTO DE PRODUÇÃO - Production planning\\4 - WS\\EXTRUSÃO\\MIX\\MONTH PLANNING\\PELLET'
-            elif i == 2:
-                caminho = '\\\\files-gdbr01\\gdbr\\GeDoc\\GeDoc - Public\\Outros\\Production\\1 - PLANEJAMENTO DE PRODUÇÃO - Production planning\\4 - WS\\EXTRUSÃO\\MIX\\MONTH PLANNING\\ROLO'
-            elif i == 3:
-                caminho = '\\\\files-gdbr01\\gdbr\\GeDoc\\GeDoc - Public\\Outros\\Production\\1 - PLANEJAMENTO DE PRODUÇÃO - Production planning\\4 - WS\EXTRUSÃO\\SPONGE LINE\\MONTH PLANNING'
-            elif i == 4:
-                caminho = '\\\\files-gdbr01\\gdbr\\GeDoc\\GeDoc - Public\\Outros\\Production\\1 - PLANEJAMENTO DE PRODUÇÃO - Production planning\\4 - WS\\EXTRUSÃO\\TPV LINE\\MONTH PLAN'
-
-            
-            os.chdir(caminho)
-
-            encontrouArquivo = False
-
-            for file in glob.glob(data[3:5]+ '*'):
-                arquivo.append(caminho + '\\' + file)
-                encontrouArquivo = True
-
-            #planilha não foi encontrada ou houve erro ao abrir o arquivo
-            if encontrouArquivo == False:
-                log.write(f"[{datetime.datetime.now()}] Erro: Nenhum arquivo encontrado no caminho {caminho}\n")
-                log.write(f"[{datetime.datetime.now()}] Erro: Falha ao abrir o arquivo no caminho {caminho}\n")
-            i = i + 1
-
-        self.show_loading()
-        try:
-            v1.v01(arquivo, data)
-        finally:
-            self.hide_loading()
-
-        log_path = "C:\TOTVS\log.txt"
-
-        if os.path.exists(log_path) and os.stat(log_path).st_size > 0:
-            os.startfile(log_path)
-            self.Close()
+                wx.MessageBox('Por favor, informe uma data valida, no formato dd/mm/aaaa', 'Data invalida!', wx.ICON_INFORMATION)
         else:
-            wx.MessageBox('OPs geradas com sucesso!', 'Info', wx.OK | wx.ICON_INFORMATION)
-            self.Close()
+        
+            while i < 5:
+                if i == 0:
+                    caminho = '\\\\files-gdbr01\\gdbr\\GeDoc\\GeDoc - Public\\Outros\\Production\\1 - PLANEJAMENTO DE PRODUÇÃO - Production planning\\4 - WS\\EXTRUSÃO\\MIX\\MONTH PLANNING\\FILTRAGEM'
+                elif i == 1:
+                    caminho = '\\\\files-gdbr01\\gdbr\\GeDoc\\GeDoc - Public\\Outros\\Production\\1 - PLANEJAMENTO DE PRODUÇÃO - Production planning\\4 - WS\\EXTRUSÃO\\MIX\\MONTH PLANNING\\PELLET'
+                elif i == 2:
+                    caminho = '\\\\files-gdbr01\\gdbr\\GeDoc\\GeDoc - Public\\Outros\\Production\\1 - PLANEJAMENTO DE PRODUÇÃO - Production planning\\4 - WS\\EXTRUSÃO\\MIX\\MONTH PLANNING\\ROLO'
+                elif i == 3:
+                    caminho = '\\\\files-gdbr01\\gdbr\\GeDoc\\GeDoc - Public\\Outros\\Production\\1 - PLANEJAMENTO DE PRODUÇÃO - Production planning\\4 - WS\EXTRUSÃO\\SPONGE LINE\\MONTH PLANNING'
+                elif i == 4:
+                    caminho = '\\\\files-gdbr01\\gdbr\\GeDoc\\GeDoc - Public\\Outros\\Production\\1 - PLANEJAMENTO DE PRODUÇÃO - Production planning\\4 - WS\\EXTRUSÃO\\TPV LINE\\MONTH PLAN'
+
+                
+                os.chdir(caminho)
+
+                encontrouArquivo = False
+
+                for file in glob.glob(data[3:5]+ '*'):
+                    arquivo.append(caminho + '\\' + file)
+                    encontrouArquivo = True
+
+                #planilha não foi encontrada ou houve erro ao abrir o arquivo
+                if encontrouArquivo == False:
+                    log.write(f"[{datetime.datetime.now()}] Erro: Nenhum arquivo encontrado no caminho {caminho}\n")
+                    log.write(f"[{datetime.datetime.now()}] Erro: Falha ao abrir o arquivo no caminho {caminho}\n")
+                i = i + 1
+
+            self.show_loading()
+            try:
+                v1.v01(arquivo, data)
+            finally:
+                self.hide_loading()
+
+            log_path = "C:\TOTVS\log" + nOP + ".txt"
+
+            if os.path.exists(log_path) and os.stat(log_path).st_size > 0:
+                wx.MessageBox('Falha ao gerar OPs! Verifique o arquivo de log', 'Info', wx.OK | wx.ICON_INFORMATION)
+                os.startfile(log_path)
+            else:
+                wx.MessageBox('OPs geradas com sucesso!', 'Info', wx.OK | wx.ICON_INFORMATION)
+                self.Close()
 
     # Tela de carregamento
     def show_loading(self):
@@ -103,6 +104,3 @@ if __name__ == "__main__":
     ex = wx.App(False)
     Main()
     ex.MainLoop()
-
-
-
