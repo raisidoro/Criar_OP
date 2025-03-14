@@ -27,9 +27,9 @@ class Main(wx.Frame):
         self.Show(True)
 
     def eventBtnGerar(self, event):
-        i = 0
-        arquivo = []
+        arquivo     = []
         informaData = wx.TextEntryDialog(self, 'Informe a data: XX/XX/XXXX ')
+        i = 0
         
         if informaData.ShowModal() == wx.ID_OK:
             data = str(informaData.GetValue())
@@ -54,7 +54,7 @@ class Main(wx.Frame):
                 elif i == 2:
                     caminho = '\\\\files-gdbr01\\gdbr\\GeDoc\\GeDoc - Public\\Outros\\Production\\1 - PLANEJAMENTO DE PRODUÇÃO - Production planning\\4 - WS\\EXTRUSÃO\\MIX\\MONTH PLANNING\\ROLO'
                 elif i == 3:
-                    caminho = '\\\\files-gdbr01\\gdbr\\GeDoc\\GeDoc - Public\\Outros\\Production\\1 - PLANEJAMENTO DE PRODUÇÃO - Production planning\\4 - WS\EXTRUSÃO\\SPONGE LINE\\MONTH PLANNING'
+                     caminho = '\\\\files-gdbr01\\gdbr\\GeDoc\\GeDoc - Public\\Outros\\Production\\1 - PLANEJAMENTO DE PRODUÇÃO - Production planning\\4 - WS\EXTRUSÃO\\SPONGE LINE\\MONTH PLANNING'
                 elif i == 4:
                     caminho = '\\\\files-gdbr01\\gdbr\\GeDoc\\GeDoc - Public\\Outros\\Production\\1 - PLANEJAMENTO DE PRODUÇÃO - Production planning\\4 - WS\\EXTRUSÃO\\TPV LINE\\MONTH PLAN'
 
@@ -71,6 +71,7 @@ class Main(wx.Frame):
                 if encontrouArquivo == False:
                     log.write(f"[{datetime.datetime.now()}] Erro: Nenhum arquivo encontrado no caminho {caminho}\n")
                     log.write(f"[{datetime.datetime.now()}] Erro: Falha ao abrir o arquivo no caminho {caminho}\n")
+
                 i = i + 1
 
             self.show_loading()
@@ -78,6 +79,8 @@ class Main(wx.Frame):
                 v1.v01(arquivo, data)
             finally:
                 self.hide_loading()
+
+            log.close()
 
             log_path = "C:\TOTVS\log" + nOP + ".txt"
 
