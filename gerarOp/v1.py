@@ -64,22 +64,33 @@ def v01(arquivo,data):
             log.write(f"[{datetime.datetime.now()}] Erro: Não foi possível encontrar a data {data} na planilha {path}\n")
             print("Data não encontrada na planilha")
 
+
         #se a planilha possuir um kanban simultâneo com uma / no meio (ex: O-208/9)
         while ws1.cell(4,i).value != None: #executa até encontrar a primeira coluna vazia
                 if ws1.cell(3,i).value != None: 
                     if  data[0:5] in str(format(ws1.cell(3,i).value, "%d/%m")):
-                        while ws1.cell(j,1).value != None :  #excecuta até encontrar a primeira linha vazia
+                        while ws1.cell(j,4).value != None :  #excecuta até encontrar a primeira linha vazia
                             if ws1.cell(j,i).value != '' and ws1.cell(j,i).value != 0:
-                                if '/' in str(ws1.cell(j, inicColuna).value):
-                                    caminho = str(path)
-                                    partKanban = str(ws1.cell(j, inicColuna).value).split('/')
-                                    for part in partKanban:
-                                        certo = part + ' , ' + str(ws1.cell(j, i).value)
+                                if 'RESUM' not in str(ws1.cell(j, inicColuna).value):
+                                    if '/' in str(ws1.cell(j, inicColuna).value):
+                                        caminho = str(path)
+                                        #certo = (str(ws1.cell(j,inicColuna).value) + ' , ' + str(ws1.cell(j,i).value))
+                                        separaKanban = (str(ws1.cell(j,inicColuna).value)).split('/')
+
+                                        primeiroKanban = separaKanban[0].strip()
+                                        certo = primeiroKanban + ' , ' + str(ws1.cell(j,i).value)
                                         valor.append((certo, caminho))
-                                else:
-                                    caminho = str(path)
-                                    certo = (str(ws1.cell(j,inicColuna).value) + ' , ' + str(ws1.cell(j,i).value))
-                                    valor.append((certo, caminho))
+
+                                        prefixo = primeiroKanban[:-len(separaKanban[1].strip())]
+                                        segundoNumero = separaKanban[1].strip()
+                                        segundoKanban = prefixo + segundoNumero
+                                        certo = segundoKanban + ' , ' + str(ws1.cell(j,i).value)
+                                        valor.append((certo, caminho))
+                                        
+                                    else:
+                                            caminho = str(path)
+                                            certo = (str(ws1.cell(j,inicColuna).value) + ' , ' + str(ws1.cell(j,i).value))
+                                            valor.append((certo, caminho))                             
                             j = j + 1
                 i = i + 1
         

@@ -39,7 +39,7 @@ class Main(wx.Frame):
 
         log = open("C:\TOTVS\log" + nOP + ".txt", "w")
 
-        #se a data não estiver no formato correto
+        #se a data não estiver no formato correto 
         try:
             datetime.datetime.strptime(data, "%d/%m/%Y")
         except ValueError:
@@ -48,13 +48,13 @@ class Main(wx.Frame):
         
             while i < 5:
                 if i == 0:
-                    caminho = '\\\\files-gdbr01\\gdbr\\GeDoc\\GeDoc - Public\\Outros\\Production\\1 - PLANEJAMENTO DE PRODUÇÃO - Production planning\\4 - WS\\EXTRUSÃO\\MIX\\MONTH PLANNING\\FILTRAGEM'
+                    caminho = '\\\\files-gdbr01\\gdbr\\GeDoc\\GeDoc - Public\\Outros\\Production\\1 - PLANEJAMENTO DE PRODUÇÃO - Production planning\\4 - WS\EXTRUSÃO\\SPONGE LINE\\MONTH PLANNING'
                 elif i == 1:
                     caminho = '\\\\files-gdbr01\\gdbr\\GeDoc\\GeDoc - Public\\Outros\\Production\\1 - PLANEJAMENTO DE PRODUÇÃO - Production planning\\4 - WS\\EXTRUSÃO\\MIX\\MONTH PLANNING\\PELLET'
                 elif i == 2:
                     caminho = '\\\\files-gdbr01\\gdbr\\GeDoc\\GeDoc - Public\\Outros\\Production\\1 - PLANEJAMENTO DE PRODUÇÃO - Production planning\\4 - WS\\EXTRUSÃO\\MIX\\MONTH PLANNING\\ROLO'
                 elif i == 3:
-                     caminho = '\\\\files-gdbr01\\gdbr\\GeDoc\\GeDoc - Public\\Outros\\Production\\1 - PLANEJAMENTO DE PRODUÇÃO - Production planning\\4 - WS\EXTRUSÃO\\SPONGE LINE\\MONTH PLANNING'
+                     caminho = '\\\\files-gdbr01\\gdbr\\GeDoc\\GeDoc - Public\\Outros\\Production\\1 - PLANEJAMENTO DE PRODUÇÃO - Production planning\\4 - WS\\EXTRUSÃO\\MIX\\MONTH PLANNING\\FILTRAGEM'
                 elif i == 4:
                     caminho = '\\\\files-gdbr01\\gdbr\\GeDoc\\GeDoc - Public\\Outros\\Production\\1 - PLANEJAMENTO DE PRODUÇÃO - Production planning\\4 - WS\\EXTRUSÃO\\TPV LINE\\MONTH PLAN'
 
