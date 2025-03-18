@@ -48,7 +48,7 @@ class Main(wx.Frame):
         
             while i < 5:
                 if i == 0:
-                    caminho = '\\\\files-gdbr01\\gdbr\\GeDoc\\GeDoc - Public\\Outros\\Production\\1 - PLANEJAMENTO DE PRODUÇÃO - Production planning\\4 - WS\EXTRUSÃO\\SPONGE LINE\\MONTH PLANNING'
+                    caminho = '\\\\files-gdbr01\\gdbr\\GeDoc\\GeDoc - Public\\Outros\\Production\\1 - PLANEJAMENTO DE PRODUÇÃO - Production planning\\4 - WS\\EXTRUSÃO\\SPONGE LINE\\MONTH PLANNING'
                 elif i == 1:
                     caminho = '\\\\files-gdbr01\\gdbr\\GeDoc\\GeDoc - Public\\Outros\\Production\\1 - PLANEJAMENTO DE PRODUÇÃO - Production planning\\4 - WS\\EXTRUSÃO\\MIX\\MONTH PLANNING\\PELLET'
                 elif i == 2:
