@@ -66,6 +66,21 @@ def v01(arquivo,data):
 
         #se a planilha possuir um kanban simultâneo com uma / no meio (ex: O-208/9)
         while ws1.cell(j, inicColuna).value is not None or ws1.cell(j, inicColuna).coordinate in ws1.merged_cells:
+            if str(ws1.cell(j, inicColuna).value) == "KANBAN":
+                j += 1
+                continue
+
+            if ws1.cell(j, inicColuna).value == None:
+                j += 1
+                continue
+
+            try:
+                datetime.datetime.strptime(str(ws1.cell(j, inicColuna).value), "%d/%m")
+                j += 1
+                continue
+            except (ValueError, TypeError):
+                pass 
+            
             if ws1.cell(j, i).value not in ('', 0, None):
                 if 'RESUMO' in str(ws1.cell(j, i).value):
                     j += 4
