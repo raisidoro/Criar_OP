@@ -121,7 +121,11 @@ def v01(arquivo,data):
         except ValueError:
             log.write(f"[{datetime.datetime.now()}] Erro: A quantidade informado no produto " + valores[:5] + " não é um número - " + caminho + "\n")               
         else:
-            op.write(nOP + ";" + indice + ";001;" + PartNumber + ";" + valores[8:] + ";" + data + ";" + data + ";F \n")
+            if ',' in valores[8:]:
+                formatado = valores[8:].replace(",", ".")
+                op.write(nOP + ";" + indice + ";001;" + PartNumber + ";" + formatado + ";" + data + ";" + data + ";F \n")
+            else:
+                op.write(nOP + ";" + indice + ";001;" + PartNumber + ";" + valores[8:] + ";" + data + ";" + data + ";F \n")
 
     op.close()
 
